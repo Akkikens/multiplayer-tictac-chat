@@ -1,0 +1,23 @@
+{
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "react-app", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
+  "root": true,
+  "rules": {
+    "react/jsx-sort-props": [
+      "error",
+      {
+        "callbacksLast": true,
+        "reservedFirst": true,
+        "shorthandLast": true
+      }
+    ],
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [["^\\u0000", "^@?\\w", "^[^.]", "^\\."]]
+      }
+    ]
+  }
+}

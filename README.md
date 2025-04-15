@@ -1,18 +1,20 @@
-# 🕹️ Multiplayer Tic-Tac-Toe
+🕹️ Real-Time Multiplayer Tic-Tac-Toe
+A browser-based multiplayer Tic-Tac-Toe game with built-in real-time chat—just share the game link with a friend and start playing instantly. Try it out here!
 
-Multiplayer Tic-Tac-Toe game in the browser, simply send a link to a friend to start playing. Includes integrated real-time chat. Play it [here](https://mwpryer-tic-tac-toe.up.railway.app/)!
+<div align="center"> <img src="images/screenshot.png" alt="Tic-Tac-Toe Game UI" width="700"> </div>
+🔥 Key Features
+Seamless real-time two-player Tic-Tac-Toe gameplay
 
-<div align="center">
-    <img src="images/screenshot.png" alt="Tic-Tac-Toe" width="700">
-</div>
+Live chat integrated within the game interface
 
-## Features
+Scoreboard to track player victories across rounds
 
-- Play Tic-Tac-Toe with a friend in real-time
-- Scoreboard to keep track of wins
-- In-game chat to communicate with your opponent
-- Optimized for both desktop and mobile use
+Fully responsive UI optimized for both desktop and mobile devices
 
-## Technologies
+🛠️ Tech Stack
+Frontend: React, TypeScript, Tailwind CSS, Mantine (built with Vite)
 
-The frontend is built with TypeScript, React, Mantine, and Tailwind CSS, and scaffoled using Vite. The backend is built with Node.js and Express. WebSockets are implemented with Socket.IO.
+Backend: Node.js, Express.js
+
+Real-Time Communication: Socket.IO (WebSockets)
+

@@ -1,9 +1,9 @@
 services:
   - type: web
     name: multiplayer-tictac-backend
-    runtime: node
-    plan: free
     region: oregon
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
+    runtime: node
     autoDeploy: true

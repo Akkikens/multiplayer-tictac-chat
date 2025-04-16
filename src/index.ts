@@ -1,7 +1,9 @@
 import http from "http";
 import path from "path";
-import express, { Request, Response } from "express";
-import { Server, Socket, ServerOptions } from "socket.io";
+import express from "express";
+import { Server } from "socket.io";
+import type { Socket } from "socket.io/dist/socket";
+import type { ServerOptions } from "socket.io";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -18,6 +20,7 @@ interface ServerToClientEvents {
   resetBoard: (startingPlayerId: number) => void;
   receiveMessage: (messageText: string) => void;
 }
+
 interface ClientToServerEvents {
   createRoom: (roomId: string) => void;
   joinRoom: (roomId: string) => void;
@@ -25,28 +28,25 @@ interface ClientToServerEvents {
   resetBoard: () => void;
   sendMessage: (messageText: string) => void;
 }
-interface InterServerEvents {}
+
 interface SocketData {
   roomId: string;
 }
 
-let options: Partial<ServerOptions> = {};
-if (process.env.NODE_ENV === "development") {
-  options = {
-    cors: {
-      origin: "http://localhost:3000",
-    },
-  };
-} else {
-  // In production, allow Vercel frontend
-  options = {
-    cors: {
-      origin: "https://multiplayer-tictac-chat.vercel.app",
-    },
-  };
-}
+const options: Partial<Record<string, any>> =
+  process.env.NODE_ENV === "development"
+    ? {
+        cors: {
+          origin: "http://localhost:3000",
+        },
+      }
+    : {
+        cors: {
+          origin: "https://multiplayer-tictac-chat.vercel.app",
+        },
+      };
 
-const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(server, options);
+      const io = new Server(server, options); // ← This line
 
 // Track starting player for each game/room
 const startingPlayers = new Map<string, number>();
@@ -124,7 +124,7 @@ io.on("connection", (socket: Socket<ClientToServerEvents, ServerToClientEvents>)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(process.cwd(), "client", "dist")));
 
-  app.get("*", (req: Request, res: Response) => {
+  app.get("*", (req, res) => {
     res.sendFile(path.join(process.cwd(), "client", "dist", "index.html"));
   });
 }

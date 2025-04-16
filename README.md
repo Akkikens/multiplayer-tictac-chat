@@ -11,6 +11,7 @@ Scoreboard to track player victories across rounds
 
 Fully responsive UI optimized for both desktop and mobile devices
 
+
 🛠️ Tech Stack
 Frontend: React, TypeScript, Tailwind CSS, Mantine (built with Vite)
 

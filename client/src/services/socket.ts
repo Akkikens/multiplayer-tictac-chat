@@ -18,15 +18,12 @@ interface ClientToServerEvents {
   sendMessage: (messageText: string) => void;
 }
 
-// Use environment variable VITE_HOST (or default to localhost)
-const SOCKET_URL =
-  import.meta.env.VITE_HOST || "http://localhost:5001";
+// This reads VITE_HOST from your .env (or falls back to localhost)
+const SOCKET_URL = import.meta.env.VITE_HOST || "http://localhost:5001";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   SOCKET_URL,
-  {
-    transports: ["websocket"],
-  }
+  { transports: ["websocket"] }
 );
 
 export default socket;

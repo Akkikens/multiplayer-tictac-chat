@@ -17,6 +17,15 @@ interface ClientToServerEvents {
   sendMessage: (messageText: string) => void;
 }
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(import.meta.env.VITE_HOST || window.location.href);
+// 👇 Change this to your Render backend
+const SOCKET_URL =
+  import.meta.env.VITE_HOST || "https://multiplayer-tictac-chat.onrender.com";
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+  SOCKET_URL,
+  {
+    transports: ["websocket"],
+  }
+);
 
 export default socket;

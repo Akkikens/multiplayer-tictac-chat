@@ -10,12 +10,12 @@ const Header = () => {
       </h1>
       <div className="mx-auto max-w-prose space-y-4 text-center">
         <p>
-          The objective of Tic-Tac-Toe is to get three tiles in a row. Two players alternate placing either an <Kbd>X</Kbd> or an <Kbd>O</Kbd> on the game board
-          until either player has three in a row or all nine squares are filled, resulting in a tie.
+          The goal of Tic-Tac-Toe is to place three of your symbols in a row. Players take turns marking either an <Kbd>X</Kbd> or an <Kbd>O</Kbd> on the board
+          until one of them forms a row of three or all nine spaces are filled, resulting in a draw.
         </p>
         <p>
-          Begin by clicking the new game button and sending the link created to a friend to play together. You can also send messages to the other player
-          connected by clicking the chat button. <span className="font-bold">Good luck, have fun!</span>
+          To start, click the "New Game" button and share the generated link with a friend to play together. You can also chat with your opponent by using the
+          chat button. <span className="font-bold">Have fun and good luck!</span>
         </p>
       </div>
     </header>

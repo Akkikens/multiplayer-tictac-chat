@@ -4,7 +4,7 @@
   "private": true,
   "description": "Multiplayer Tic-Tac-Toe game",
   "license": "ISC",
-  "author": "Matt Pryer <mwpryer@gmail.com>",
+  "author": "Akshay Kalapgar <akshaykalapgar23@gmail.com>",
   "scripts": {
     "build": "tsc && cd client && npm install && npm run build",
     "client": "npm run dev --prefix client",

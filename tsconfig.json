@@ -1,9 +1,12 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "src",
+    "outDir": "dist",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "outDir": "./dist"
+    "strict": true,
+    "skipLibCheck": true
   },
-  "files": ["src/index.ts"]
+  "include": ["src"]
 }

@@ -93,5 +93,5 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path_1.default.join(process.cwd(), "client", "dist", "index.html"));
     });
 }
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server listening on port ${port}`));

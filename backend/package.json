@@ -1,12 +1,14 @@
 {
-  "name": "multiplayer-backend",
+  "name": "multiplayer-tictac-backend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
+    "dotenv": "^16.0.0",
     "express": "^4.18.2",
-    "socket.io": "^4.7.2"
+    "http": "0.0.1-security",
+    "socket.io": "^4.6.1"
   }
 }

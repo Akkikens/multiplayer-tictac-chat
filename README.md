@@ -17,4 +17,3 @@ Frontend: React, TypeScript, Tailwind CSS, Mantine (built with Vite)
 Backend: Node.js, Express.js
 
 Real-Time Communication: Socket.IO (WebSockets)
-

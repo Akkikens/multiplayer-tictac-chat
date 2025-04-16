@@ -13,7 +13,19 @@ const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 let options = {};
 if (process.env.NODE_ENV === "development") {
-    options = { cors: { origin: "http://localhost:3000" } };
+    options = {
+        cors: {
+            origin: "http://localhost:3000",
+        },
+    };
+}
+else {
+    // In production, allow Vercel frontend
+    options = {
+        cors: {
+            origin: "https://multiplayer-tictac-chat.vercel.app",
+        },
+    };
 }
 const io = new socket_io_1.Server(server, options);
 // Track starting player for each game/room
@@ -26,11 +38,10 @@ io.on("connection", (socket) => {
             socket.join(roomId);
             socket.data.roomId = roomId;
             socket.emit("roomJoined");
-            // Player 2 starts first round
             socket.emit("resetBoard", 2);
         }
         else {
-            socket.emit("roomError");
+            socket.emit("roomError", "Room already exists");
         }
     });
     socket.on("joinRoom", (roomId) => {
@@ -45,7 +56,7 @@ io.on("connection", (socket) => {
             }
         }
         else {
-            socket.emit("roomError");
+            socket.emit("roomError", "Room full or does not exist");
         }
     });
     socket.on("gameMove", (idx) => {
@@ -54,13 +65,12 @@ io.on("connection", (socket) => {
             socket.to(roomId).emit("gameMove", idx);
         }
         else {
-            socket.emit("roomError");
+            socket.emit("roomError", "Invalid game state");
         }
     });
     socket.on("resetBoard", () => {
         const { roomId } = socket.data;
         if (roomId) {
-            // Flip starting player every complete round
             const startingPlayer = startingPlayers.get(roomId);
             if (startingPlayer) {
                 const newStartingPlayer = (startingPlayer % 2) + 1;
@@ -69,7 +79,7 @@ io.on("connection", (socket) => {
             }
         }
         else {
-            socket.emit("roomError");
+            socket.emit("roomError", "Invalid game state");
         }
     });
     socket.on("sendMessage", (messageText) => {
@@ -94,4 +104,6 @@ if (process.env.NODE_ENV === "production") {
     });
 }
 const port = process.env.PORT || 5000;
-server.listen(port, () => console.log(`Server listening on port ${port}`));
+server.listen(port, () => {
+    console.log(`🚀 Server listening on port ${port}`);
+});

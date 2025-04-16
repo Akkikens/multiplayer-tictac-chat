@@ -1,7 +1,7 @@
 import http from "http";
 import path from "path";
-import express from "express";
-import { Server, ServerOptions } from "socket.io";
+import express, { Request, Response } from "express";
+import { Server, Socket, ServerOptions } from "socket.io";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -32,56 +32,67 @@ interface SocketData {
 
 let options: Partial<ServerOptions> = {};
 if (process.env.NODE_ENV === "development") {
-  options = { cors: { origin: "http://localhost:3000" } };
+  options = {
+    cors: {
+      origin: "http://localhost:3000",
+    },
+  };
+} else {
+  // In production, allow Vercel frontend
+  options = {
+    cors: {
+      origin: "https://multiplayer-tictac-chat.vercel.app",
+    },
+  };
 }
+
 const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(server, options);
 
 // Track starting player for each game/room
 const startingPlayers = new Map<string, number>();
 
-io.on("connection", (socket) => {
-  socket.on("createRoom", (roomId) => {
+io.on("connection", (socket: Socket<ClientToServerEvents, ServerToClientEvents>) => {
+  socket.on("createRoom", (roomId: string) => {
     const room = io.sockets.adapter.rooms.get(roomId);
     if (!room) {
       startingPlayers.set(roomId, 2);
       socket.join(roomId);
       socket.data.roomId = roomId;
       socket.emit("roomJoined");
-      // Player 2 starts first round
       socket.emit("resetBoard", 2);
     } else {
-      socket.emit("roomError");
+      socket.emit("roomError", "Room already exists");
     }
   });
 
-  socket.on("joinRoom", (roomId) => {
+  socket.on("joinRoom", (roomId: string) => {
     const room = io.sockets.adapter.rooms.get(roomId);
     if (room && room.size < 2) {
       socket.join(roomId);
       socket.data.roomId = roomId;
       socket.emit("roomJoined");
+
       const updatedRoom = io.sockets.adapter.rooms.get(roomId);
       if (updatedRoom && updatedRoom.size === 2) {
         io.to(roomId).emit("startGame");
       }
     } else {
-      socket.emit("roomError");
+      socket.emit("roomError", "Room full or does not exist");
     }
   });
 
-  socket.on("gameMove", (idx) => {
+  socket.on("gameMove", (idx: number) => {
     const { roomId } = socket.data;
     if (roomId) {
       socket.to(roomId).emit("gameMove", idx);
     } else {
-      socket.emit("roomError");
+      socket.emit("roomError", "Invalid game state");
     }
   });
 
   socket.on("resetBoard", () => {
     const { roomId } = socket.data;
     if (roomId) {
-      // Flip starting player every complete round
       const startingPlayer = startingPlayers.get(roomId);
       if (startingPlayer) {
         const newStartingPlayer = (startingPlayer % 2) + 1;
@@ -89,11 +100,11 @@ io.on("connection", (socket) => {
         io.to(roomId).emit("resetBoard", newStartingPlayer);
       }
     } else {
-      socket.emit("roomError");
+      socket.emit("roomError", "Invalid game state");
     }
   });
 
-  socket.on("sendMessage", (messageText) => {
+  socket.on("sendMessage", (messageText: string) => {
     const { roomId } = socket.data;
     if (roomId) {
       socket.to(roomId).emit("receiveMessage", messageText);
@@ -113,10 +124,12 @@ io.on("connection", (socket) => {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(process.cwd(), "client", "dist")));
 
-  app.get("*", (req, res) => {
+  app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(process.cwd(), "client", "dist", "index.html"));
   });
 }
 
 const port = process.env.PORT || 5000;
-server.listen(port, () => console.log(`Server listening on port ${port}`));
+server.listen(port, () => {
+  console.log(`🚀 Server listening on port ${port}`);
+});

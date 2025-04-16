@@ -1,9 +1,9 @@
-import http from "http";
+import { Request, Response } from "express";
+import * as express from "express";
 import path from "path";
-import express from "express";
+import http from "http";
 import { Server } from "socket.io";
 import type { Socket } from "socket.io/dist/socket";
-import type { ServerOptions } from "socket.io";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -33,7 +33,7 @@ interface SocketData {
   roomId: string;
 }
 
-const options: Partial<Record<string, any>> =
+const options =
   process.env.NODE_ENV === "development"
     ? {
         cors: {
@@ -46,7 +46,7 @@ const options: Partial<Record<string, any>> =
         },
       };
 
-      const io = new Server(server, options); // ← This line
+const io = new Server(server, options);
 
 // Track starting player for each game/room
 const startingPlayers = new Map<string, number>();
@@ -123,9 +123,10 @@ io.on("connection", (socket: Socket<ClientToServerEvents, ServerToClientEvents>)
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(process.cwd(), "client", "dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(process.cwd(), "client", "dist", "index.html"));
+  
+  app.get("*", (req: Request, res: Response) => {
+    // Using type assertion to let TypeScript know sendFile exists.
+    (res as any).sendFile(path.join(process.cwd(), "client", "dist", "index.html"));
   });
 }
 

@@ -1,8 +1,8 @@
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const { Server } = require("socket.io");
-const dotenv = require("dotenv");
+import express from "express";
+import path from "path";
+import http from "http";
+import { Server } from "socket.io";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -24,10 +24,10 @@ const options = process.env.NODE_ENV === "development"
 const io = new Server(server, options);
 
 // Track starting player for each game room
-const startingPlayers = new Map();
+const startingPlayers = new Map<string, number>();
 
 io.on("connection", (socket) => {
-  socket.on("createRoom", (roomId) => {
+  socket.on("createRoom", (roomId: string) => {
     const room = io.sockets.adapter.rooms.get(roomId);
     if (!room) {
       startingPlayers.set(roomId, 2);
@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("joinRoom", (roomId) => {
+  socket.on("joinRoom", (roomId: string) => {
     const room = io.sockets.adapter.rooms.get(roomId);
     if (room && room.size < 2) {
       socket.join(roomId);
@@ -55,7 +55,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("gameMove", (idx) => {
+  socket.on("gameMove", (idx: number) => {
     const { roomId } = socket.data;
     if (roomId) {
       socket.to(roomId).emit("gameMove", idx);
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendMessage", (messageText) => {
+  socket.on("sendMessage", (messageText: string) => {
     const { roomId } = socket.data;
     if (roomId) {
       socket.to(roomId).emit("receiveMessage", messageText);
@@ -95,7 +95,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// Optional: Serve frontend assets if needed (adjust path if your build is in the client folder)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(process.cwd(), "client", "dist")));
   app.get("*", (req, res) => {
@@ -103,8 +102,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Use a dynamic port provided by Railway (or default to 5001 for local dev)
-const PORT = process.env.PORT || 5001;
+const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 5001;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server listening on port ${PORT}`);
 });

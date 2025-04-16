@@ -9,6 +9,7 @@ interface ServerToClientEvents {
   resetBoard: (startingPlayerId: number) => void;
   receiveMessage: (messageText: string) => void;
 }
+
 interface ClientToServerEvents {
   createRoom: (roomId: string) => void;
   joinRoom: (roomId: string) => void;
@@ -17,9 +18,9 @@ interface ClientToServerEvents {
   sendMessage: (messageText: string) => void;
 }
 
-// 👇 Change this to your Render backend
+// Use environment variable VITE_HOST (or default to localhost)
 const SOCKET_URL =
-  import.meta.env.VITE_HOST || "https://multiplayer-tictac-chat.onrender.com";
+  import.meta.env.VITE_HOST || "http://localhost:5001";
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   SOCKET_URL,
